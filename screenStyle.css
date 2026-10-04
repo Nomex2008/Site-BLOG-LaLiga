@@ -160,17 +160,20 @@ h1.header {
 }
 
 .main-block {
-    margin-bottom: 40px;
+    padding: 30px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    border-bottom: 1px solid rgb(179, 172, 172);
+}
+.main-block:last-child{
+    border-bottom: 0;
 }
 
 .main-block:first-child {
     margin-top: 40px;
 }
-
 
 /* lists */
 
@@ -187,6 +190,7 @@ h1.header {
     border-left: 4px solid #ff4b44;
     border-radius: 5px;
     font-size: 17px;
+    list-style-type: none;
 }
 
 .main-block ol li::marker {
@@ -204,13 +208,36 @@ h1.header {
     list-style-type: square;
 }
 
+.main-article-image {
+    margin-top: 20px;
+}
+.main-article-image img{
+    max-width: 800px;
+    border: 1px solid gray;
+    width: 100%;
+    height: auto;
+}
 
-/* headings */
 
 .main-header {
     font-size: 30px;
     font-weight: 600;
     margin-bottom: 10px;
+}
+.main-text{
+    margin-top: 20px;
+}
+.main-team {
+    display: flex;
+    align-items: center;
+}
+.main-team h2 {
+    margin: 0;
+}
+.main-team svg {
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
 }
 
 
