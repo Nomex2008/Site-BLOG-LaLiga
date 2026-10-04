@@ -1,0 +1,204 @@
+/*reset css*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/*
+    MY CODE
+*/
+
+
+/*table*/
+table {
+    width: 100%;
+    margin: 1.5rem 0;
+    border-collapse: collapse;
+    font-size: 1rem;
+    background-color: white;
+}
+
+caption {
+    margin-bottom: 0.8rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-align: left;
+}
+
+th,
+td {
+    padding: 0.8rem 1rem;
+    border: 0.1rem solid #cccccc;
+    text-align: left;
+}
+
+thead th {
+    background-color: #ff4b44;
+    color: white;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+tbody tr:hover {
+    background-color: #eeeeee;
+}
+
+tfoot td {
+    text-align: center;
+    background-color: #f5f5f5;
+}
+
+/*main body*/
+
+body {
+    font-weight: 400;
+    font-style: normal;
+    font-family: "Source Sans 3", sans-serif;
+    font-optical-sizing: auto;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+
+.container-main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 100%;
+}
+.container {
+    padding: 0 15px;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+/*header*/
+.header {
+    padding: 20px;
+    background-color: #222222;
+    color: white;
+
+    font-family: "Delicious Handrawn", cursive;
+    font-size: 40px;
+}
+.header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+h1.header{padding: 0;}
+.header svg{
+    width: 17%;
+    height: auto;
+}
+
+/*main*/
+.main {
+    padding: 20px;
+}
+.main a{
+    color: #222222;
+}
+.main-block {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.main-block:first-child{margin-top: 40px;}
+.main-block ol,
+.main-block ul {
+    margin: 1.2rem 0;
+    padding-left: 2.5rem;
+}
+
+.main-block li {
+    margin-bottom: 0.7rem;
+    padding: 0.6rem 1rem;
+    background-color: #f5f5f5;
+    border-left: 0.25rem solid #ff4b44;
+    border-radius: 0.3rem;
+    font-size: 1.05rem;
+}
+
+.main-block ol li::marker {
+    font-weight: bold;
+}
+.main-block ol {
+    display: flex;
+    justify-content: space-between;
+    min-width: 500px;
+}
+
+.main-block ul {
+    list-style-type: square;
+}
+.main-header {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 30px;
+}
+
+/*footer*/
+.footer {
+    margin-top: auto;
+    padding: 20px;
+    background-color: #181733;
+    color: white;
+    font-family: "Delicious Handrawn", cursive;
+    font-size: 20px;
+}
+
+.footer-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
