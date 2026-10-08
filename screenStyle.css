@@ -146,6 +146,22 @@ a {
     font-size: 2.5rem;
 }
 
+.header {
+    animation: header-animation 1s ease;
+}
+
+@keyframes header-animation {
+    from {
+        opacity: 0;
+        transform: translateY(-1rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .header a {
     transition: .3s ease;
 }
@@ -167,6 +183,10 @@ h1.header {
 .header svg {
     width: 17%;
     height: auto;
+    transition: all .3s ease;
+}
+.header svg:hover {
+    transform: scale(1.1);
 }
 
 
