@@ -1,0 +1,323 @@
+/* reset css */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+    color: black;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+
+/* MY CODE */
+
+
+/* table */
+
+.comparison-table {
+    width: 100%;
+    margin: 1.5rem 0;
+    border-collapse: collapse;
+    font-size: 1rem;
+    background-color: white;
+}
+
+.comparison-table caption {
+    margin-bottom: 0.8125rem;
+    font-size: 1.3125rem;
+    text-align: center;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 0.8125rem 1rem;
+    border: 2px solid white;
+}
+
+.comparison-table thead th {
+    background-color: white;
+    color: black;
+}
+
+.comparison-table tbody tr:nth-child(even) {
+    background-color: white;
+}
+
+.comparison-table tbody tr {
+    transition: all .3s ease;
+}
+
+.comparison-table tfoot td {
+    text-align: center;
+    background-color: #fff;
+}
+
+
+/* main body */
+
+body {
+    font-family: "PT Serif", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.container-main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.container {
+    padding: 0 0.9375rem;
+    margin: 0 auto;
+    max-width: 75rem;
+}
+
+
+/* header */
+
+.header {
+    padding: 1.25rem;
+    background-color: #fff;
+    color: black;
+    font-family: "PT Serif", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2.5rem;
+}
+
+.header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1.header {
+    padding: 0;
+}
+
+.header svg {
+    width: 17%;
+    height: auto;
+    color: black;
+    display: none;
+}
+
+
+/* main */
+
+.main {
+    padding: 1.25rem;
+    flex-grow: 1;
+}
+
+.main a {
+    color: black;
+}
+
+.main-block {
+    padding: 1.875rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-bottom: 1px solid black;
+}
+
+.main-block:last-child {
+    border-bottom: 0;
+}
+
+.main-block:first-child {
+    margin-top: 0rem;
+}
+
+
+/* lists */
+
+.main-block ol,
+.main-block ul {
+    margin: 1.1875rem 0 0 0;
+    padding-left: 2.5rem;
+}
+
+.main-block li {
+    margin-bottom: 0.6875rem;
+    padding: 0.625rem 1rem;
+    background-color: #fff;
+    border-radius: 0.3125rem;
+    font-size: 1.0625rem;
+    list-style-type: none;
+}
+
+.main-block ol li::marker {
+    font-weight: bold;
+}
+
+.main-block ol {
+    display: flex;
+    justify-content: space-between;
+    min-width: 31.25rem;
+    list-style-type: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.main-block ul {
+    list-style-type: square;
+    list-style-type: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.main-article-image {
+    margin-top: 1.25rem;
+}
+
+.main-article-image img {
+    display: none;
+}
+
+.main-post {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.25rem;
+    margin-top: 1.25rem;
+}
+
+.main-post a {
+    transition: .3s ease;
+}
+
+.main-post a:hover {
+    color: black;
+}
+
+.main-header {
+    font-size: 1.875rem;
+    font-weight: 600;
+    margin-bottom: 0.625rem;
+}
+
+.main-text {
+    margin-top: 1.25rem;
+}
+
+.main-team {
+    display: flex;
+    align-items: center;
+}
+
+.main-team h2 {
+    margin: 0;
+}
+
+.main-team svg {
+    width: 3.125rem;
+    height: 3.125rem;
+    margin-left: 0.625rem;
+    display: none;
+}
+
+
+/* footer */
+
+.footer {
+    padding: 1.25rem;
+    background-color: #fff;
+    color: black;
+    font-family: "PT Serif", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1.25rem;
+}
+
+.footer-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+@media (max-width: 1200px) {
+
+    .container {
+        max-width: 50rem;
+    }
+
+    .header {
+        font-size: 2rem;
+    }
+
+    .header svg {
+        width: 15%;
+    }
+
+    .main-header {
+        font-size: 1.8rem;
+    }
+
+    .main-article-image img {
+        max-width: 40rem;
+    }
+
+    .main-block:first-child {
+        margin-top: 0rem;
+    }
+}
