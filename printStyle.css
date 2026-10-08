@@ -84,10 +84,6 @@ table {
     background-color: white;
 }
 
-.comparison-table tbody tr {
-    transition: all .3s ease;
-}
-
 .comparison-table tfoot td {
     text-align: center;
     background-color: #fff;
@@ -239,10 +235,6 @@ h1.header {
     flex-direction: column;
     row-gap: 1.25rem;
     margin-top: 1.25rem;
-}
-
-.main-post a {
-    transition: .3s ease;
 }
 
 .main-post a:hover {
