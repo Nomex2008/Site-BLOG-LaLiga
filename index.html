@@ -57,8 +57,91 @@
                         <a href="./article3.html">Atlético Madrid and Other Strong La Liga Teams</a>
                     </div>
                 </div>
+
                 <div class="main-block">
-                    <p class="main-text">Thank you for your attention</p>
+                    <h2 class="main-header">Share Your Opinion</h2>
+                    <div class="main-post">
+                        <form  id="opinion-form" class="form">
+
+                            <div class="form-group">
+                                <label for="name">Name:</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="image">Image URL:</label>
+                                <input type="url" id="image" name="image">
+                            </div>
+
+                            <fieldset class="form-fieldset">
+                                <legend>Which team do you support?</legend>
+
+                                <div class="form-radio">
+                                    <input type="radio" id="real-madrid" name="favorite-team" value="Real Madrid" required>
+                                    <label for="real-madrid">Real Madrid</label>
+                                </div>
+
+                                <div class="form-radio">
+                                    <input type="radio" id="barcelona" name="favorite-team" value="FC Barcelona">
+                                    <label for="barcelona">FC Barcelona</label>
+                                </div>
+
+                                <div class="form-radio">
+                                    <input type="radio" id="atletico" name="favorite-team" value="Atlético Madrid">
+                                    <label for="atletico">Atlético Madrid</label>
+                                </div>
+                            </fieldset>
+
+                            <div class="form-group">
+                                <input class="form-group-ask" type="checkbox" id="will-return" name="will-return">
+                                <label for="will-return">I will return to this page.</label>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="keywords">Keywords:</label>
+                                <input type="text" id="keywords" name="keywords" list="la-liga-keywords">
+
+                                <datalist id="la-liga-keywords">
+                                    <option value="La Liga">
+                                    <option value="Real Madrid">
+                                    <option value="FC Barcelona">
+                                    <option value="Atlético Madrid">
+                                    <option value="Football">
+                                    <option value="El Clásico">
+                                    <option value="Spanish football">
+                                </datalist>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="opinion">Your opinion:</label>
+                                <textarea id="opinion" name="opinion" rows="6" required></textarea>
+                            </div>
+
+                            <div class="form-buttons">
+                                <button type="submit">Send</button>
+                                <button type="reset">Reset</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <div class="main-block">
+                    <h2 class="main-header">Opinion of people</h2>
+                    <div class="main-post">
+                       <div id="opinions-container">
+                        
+                       </div>
+                    </div>
+                </div>
+
+                <div class="main-block">
+                    <p class="main-text">Thank you for your attention!</p>
                 </div>
             </div>
         </main>
@@ -74,5 +157,22 @@
         </footer>
 
     </div>
+
+    <script id="opinion-template" type="text/template">
+        <article class="visitor-opinion">
+            <h3>{{name}}</h3>
+            <p><strong>Email:</strong> {{email}}</p>
+            <p><strong>Favorite team:</strong> {{favoriteTeam}}</p>
+            <p><strong>Opinion:</strong> {{opinion}}</p>
+            <p><strong>Keywords:</strong> {{keywords}}</p>
+            <p>{{willReturnMessage}}</p>
+            <p><small>{{createdDate}}</small></p>
+            {{#image}}
+                <img src="{{image}}" alt="Image shared by {{name}}">
+            {{/image}}
+        </article>
+    </script>
+    
+    <script  type="module" src="./js/main.js"></script>
 </body>
 </html>
