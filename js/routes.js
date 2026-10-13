@@ -1,8 +1,6 @@
-
 import Mustache from "./mustache.js";
 import processOpnFrmData from "./addOpinion.js";
 
-const ARTICLES_URL = "https://wt.kpi.fei.tuke.sk/api/article";
 const ARTICLES_PER_PAGE = 20;
 
 export default [
@@ -63,66 +61,51 @@ function createHtml4opinions(targetElm) {
         );
 }
 
-function fetchAndDisplayArticles(targetElm, offsetParam) {
-    const offset = Math.max(0, Number.parseInt(offsetParam, 10) || 0);
-    const url = `${ARTICLES_URL}/?max=${ARTICLES_PER_PAGE}&offset=${offset}`;
+function fetchAndDisplayArticles(targetElm) {
+    const hashParts = window.location.hash.split("/");
+    const max = 10;
+    const offset = Math.max(0, Number(hashParts[1]) || 0);
 
     const xhr = new XMLHttpRequest();
-
-    xhr.open("GET", url, true);
-    xhr.responseType = "json";
+    xhr.open("GET", "./data/articles.json", true);
 
     xhr.onload = function () {
         if (xhr.status >= 200 && xhr.status < 300) {
-            const responseJSON = xhr.response;
+            try {
+                const data = JSON.parse(xhr.responseText);
+                const allArticles = data.articles;
 
-            if (!responseJSON) {
-                showArticlesError(targetElm, "The server returned invalid JSON.");
-                return;
+                const articles = allArticles.slice(offset, offset + max);
+                const totalCount = allArticles.length;
+
+                const viewData = {
+                    articles: articles,
+                    previousPage: offset > 0,
+                    previousOffset: Math.max(0, offset - max),
+                    nextPage: offset + max < totalCount,
+                    nextOffset: offset + max
+                };
+
+                document.getElementById(targetElm).innerHTML =
+                    Mustache.render(
+                        document.getElementById("template-articles").innerHTML,
+                        viewData
+                    );
+            } catch (error) {
+                showArticlesError(targetElm, error.message);
             }
-
-            const articles = Array.isArray(responseJSON.articles)
-                ? responseJSON.articles
-                : [];
-
-            const totalCount = Number(
-                responseJSON.meta?.totalCount
-            );
-
-            const view = {
-                articles: articles,
-                previousPage: offset > 0,
-                previousOffset: Math.max(0, offset - ARTICLES_PER_PAGE),
-                nextPage: Number.isFinite(totalCount)
-                    ? offset + articles.length < totalCount
-                    : articles.length === ARTICLES_PER_PAGE,
-                nextOffset: offset + ARTICLES_PER_PAGE
-            };
-
-            document.getElementById(targetElm).innerHTML =
-                Mustache.render(
-                    document.getElementById("template-articles").innerHTML,
-                    view
-                );
         } else {
-            showArticlesError(
-                targetElm,
-                `Server answered with ${xhr.status}: ${xhr.statusText}.`
-            );
+            showArticlesError(targetElm, "HTTP " + xhr.status);
         }
     };
 
     xhr.onerror = function () {
-        showArticlesError(targetElm, "Network error while loading articles.");
+        showArticlesError(targetElm, "Network error");
     };
 
     xhr.send();
 }
-
-function showArticlesError(targetElm, errorMessage) {
+function showArticlesError(targetElm) {
     document.getElementById(targetElm).innerHTML =
-        Mustache.render(
-            document.getElementById("template-articles-error").innerHTML,
-            { errMessage: errorMessage }
-        );
+        document.getElementById("template-articles-error").innerHTML;
 }
