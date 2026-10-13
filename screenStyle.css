@@ -329,7 +329,24 @@ h1.header {
 }
 .menu a:hover {
     color: #b3b3b3;
-    background-color: #08063f;
+    background-color: #0d0a6e;
+}
+
+/*pagination*/
+.pagination {
+    margin-top: 30px;
+}
+.pagination a {
+    margin-right: 15px;
+    color: #fff;
+    background-color: #181733;
+    border-radius: 20px;
+    padding: 10px;
+    transition: all .3s ease;
+}
+.pagination a:hover {
+    color: #b3b3b3;
+    background-color: #0d0a6e;
 }
 
 /* form */
