@@ -189,7 +189,6 @@ h1.header {
     transform: scale(1.1);
 }
 
-
 /* main */
 
 .main {
@@ -309,7 +308,29 @@ h1.header {
     margin-left: 0.625rem;
 }
 
-/* form */
+/* menu */
+.header-menu:last-child {
+    border-bottom: 1px solid gray;
+}
+
+.menu {
+    margin: 15px 0 0 0;
+    display: flex;
+    background-color: #181733;
+    border-radius: 20px;
+}
+.menu a{
+    margin-right: 15px;
+    color: #fff;
+    background-color: #181733;
+    border-radius: 20px;
+    padding: 10px;
+    transition: all .3s ease;
+}
+.menu a:hover {
+    color: #b3b3b3;
+    background-color: #08063f;
+}
 
 /* form */
 
