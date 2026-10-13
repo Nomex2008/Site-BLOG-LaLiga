@@ -67,7 +67,7 @@ function fetchAndDisplayArticles(targetElm) {
     const offset = Math.max(0, Number(hashParts[1]) || 0);
 
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", "./data/articles.json", true);
+    xhr.open("GET", "https://raw.githubusercontent.com/Nomex2008/json-for-Blog/refs/heads/main/articles.json", true);
 
     xhr.onload = function () {
         if (xhr.status >= 200 && xhr.status < 300) {
