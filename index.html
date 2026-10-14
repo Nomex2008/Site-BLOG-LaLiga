@@ -40,6 +40,7 @@
                     <div id="menuIts" class="menu mnHide">
                         <a href="#welcome">Welcome!</a>
                         <a href="#articles">Articles</a>
+                        <a href="#artInsert">Add article</a>
                         <a href="#opinions">Visitor opinions</a>
                         <a href="#addOpinion">Add your opinion</a>
                     </div>
@@ -125,32 +126,110 @@
 
     <!--article-page-->
     <script id="template-article" type="text/template">
-    <section class="main-block">
-        <article class="main-block">
-            <h2 class="main-header">{{title}}</h2>
+        <section class="main-block">
+            <article class="main-block">
+                <h2 class="main-header">{{title}}</h2>
 
-            <p class="main-text">Author: {{author}}</p>
+                <p class="main-text">Author: {{author}}</p>
 
-            {{#imageLink}}
-            <figure>
-                <img src="{{imageLink}}" alt="{{title}}">
-            </figure>
-            {{/imageLink}}
+                {{#imageLink}}
+                <figure>
+                    <img src="{{imageLink}}" alt="{{title}}">
+                </figure>
+                {{/imageLink}}
 
-            <div class="main-text">{{{content}}}</div>
+                <div class="main-text">{{{content}}}</div>
 
-            <p class="main-text">
-                Keywords: {{tags}}
-            </p>
-        </article>
+                <p class="main-text">
+                    Keywords: {{tags}}
+                </p>
+            </article>
 
-        <nav class="pagination">
-            <a href="{{backLink}}">Back</a>
-            <a href="{{editLink}}">Edit</a>
-            <a href="{{deleteLink}}">Delete</a>
-        </nav>
-    </section>
-</script>
+            <nav class="pagination">
+                <a href="{{backLink}}">Back</a>
+                <a href="{{editLink}}">Edit</a>
+                <a href="{{deleteLink}}">Delete</a>
+            </nav>
+        </section>
+    </script>
+
+    <!--article-edit-->
+    
+    <script id="template-article-form" type="text/template">
+        <section class="main-block">
+            <h2 class="main-header">{{formTitle}}</h2>
+
+            <form id="articleForm" class="form">
+                <div class="form-group">
+                    <label for="author">Author:</label>
+                    <input
+                        type="text"
+                        id="author"
+                        name="author"
+                        value="{{author}}"
+                        maxlength="100"
+                        placeholder="Article author"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value="{{title}}"
+                        maxlength="100"
+                        pattern="\S[\S\s]*"
+                        placeholder="Article title"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="imageLink">Image URL:</label>
+                    <input
+                        type="url"
+                        id="imageLink"
+                        name="imageLink"
+                        value="{{imageLink}}"
+                        placeholder="https://example.com/image.jpg"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="content">Article content:</label>
+                    <textarea
+                        id="content"
+                        name="content"
+                        rows="10"
+                        required
+                        placeholder="Write the full article..."
+                    >{{content}}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="tags">Keywords:</label>
+                    <input
+                        type="text"
+                        id="tags"
+                        name="tags"
+                        value="{{tags}}"
+                        placeholder="La Liga, football, Spanish football"
+                    >
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit">{{submitBtTitle}}</button>
+                    <button type="reset"><a href="{{backLink}}" class="linkAsButton">Back</a></button>
+                </div>
+            </form>
+
+            <footer>
+                
+            </footer>
+        </section>
+    </script>
 
     <!-- Error while loading articles -->
     <script id="template-articles-error" type="text/template">

@@ -79,14 +79,18 @@ export default class articleFormsHandler {
         this.formElements.namedItem('btCancelFileUpload').onclick= ()=>this.cancelFileUpload();
 
 
-        if(articleId>=0){ //article edit (update)
-            artForm.onsubmit= (event)=>this.processArtEditFrmData(event);
+
+        if (articleId >= 0) {
+            // Article edit (update)
+            artForm.onsubmit = (event) => this.processArtEditFrmData(event);
             this.articleId = articleId;
             this.offset = offset;
             this.totalCount = totalCount;
-        }else{
-            //functionality for adding a new article can go here
+        } else {
+            // Article insert (create)
+            artForm.onsubmit = (event) => this.processArtInsertFrmData(event);
         }
+
 
     }
 
@@ -245,6 +249,72 @@ export default class articleFormsHandler {
             })
             .finally(() => window.location.hash = `#article/${ this.articleId}/${ this.offset}/${ this.totalCount}`);
 
+        }
+    processArtInsertFrmData(event) {
+        event.preventDefault();
+
+        const articleData = {
+            title: this.formElements.namedItem("title").value.trim(),
+            content: this.formElements.namedItem("content").value.trim(),
+            author: this.formElements.namedItem("author").value.trim(),
+            imageLink: this.formElements.namedItem("imageLink").value.trim(),
+            tags: this.formElements.namedItem("tags").value.trim()
+        };
+
+        if (!(articleData.title && articleData.content)) {
+            window.alert("Please, enter article title and content");
+            return;
+        }
+
+        if (!articleData.author) {
+            articleData.author = "Anonymous";
+        }
+
+        if (!articleData.imageLink) {
+            delete articleData.imageLink;
+        }
+
+        if (!articleData.tags) {
+            delete articleData.tags;
+        } else {
+            articleData.tags = articleData.tags
+                .split(",")
+                .map(tag => tag.trim())
+                .filter(tag => tag);
+
+            if (articleData.tags.length === 0) {
+                delete articleData.tags;
+            }
+        }
+
+        const postReqSettings = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json;charset=utf-8"
+            },
+            body: JSON.stringify(articleData)
+        };
+
+        fetch(`${this.serverUrl}/article`, postReqSettings)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return Promise.reject(
+                        new Error(
+                            `Server answered with ${response.status}: ${response.statusText}.`
+                        )
+                    );
+                }
+            })
+            .then(responseJSON => {
+                window.alert("Article successfully added to the server.");
+                window.location.hash = "#articles";
+            })
+            .catch(error => {
+                window.alert(`Failed to add the article to the server. ${error}`);
+            });
     }
+
 }
 
