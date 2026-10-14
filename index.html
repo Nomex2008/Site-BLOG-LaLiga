@@ -101,7 +101,7 @@
 
             {{#articles}}
             <article class="main-block">
-                <h3 class="main-header">{{title}}</h3>
+                <h3 class="main-header"> <a class="articles-link" href="{{detailLink}}">{{title}}</a> </h3>
                 <p class="main-text">{{description}}</p>
                 <p class="main-text">Author: {{author}}</p>
             </article>
@@ -122,6 +122,35 @@
             </nav>
         </section>
     </script>
+
+    <!--article-page-->
+    <script id="template-article" type="text/template">
+    <section class="main-block">
+        <article class="main-block">
+            <h2 class="main-header">{{title}}</h2>
+
+            <p class="main-text">Author: {{author}}</p>
+
+            {{#imageLink}}
+            <figure>
+                <img src="{{imageLink}}" alt="{{title}}">
+            </figure>
+            {{/imageLink}}
+
+            <div class="main-text">{{{content}}}</div>
+
+            <p class="main-text">
+                Keywords: {{tags}}
+            </p>
+        </article>
+
+        <nav class="pagination">
+            <a href="{{backLink}}">Back</a>
+            <a href="{{editLink}}">Edit</a>
+            <a href="{{deleteLink}}">Delete</a>
+        </nav>
+    </section>
+</script>
 
     <!-- Error while loading articles -->
     <script id="template-articles-error" type="text/template">
