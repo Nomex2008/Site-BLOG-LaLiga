@@ -1,320 +1,265 @@
-/*
- * Created by Stefan Korecko, 2021
- * Functions to handle forms for article editing and inserting
- */
 
-
-/**
- Handles the form from the template:
-
- <form id="articleForm">
- <label for="author">Author:</label>
- <input type="text" name="author" id="author" value="{{author}}" size="50" title="Article author, max. length 100 characters." maxlength="100" placeholder="napr. Ján Trieska" />
- <br>
- <label for="title">Title:</label>
- <input type="text" name="title" id="title" value="{{title}}" size="50"  maxlength="100" pattern="\S[\S\s]*" required title="Article title, mandatory item, max. length: 100 characters, the first character must not be a space." placeholder="napr. Môj prvý príbeh / e.g. My story." />
- <br>
- <label for="imageLink">Image (url):</label>
- <input type="url" name="imageLink" id="imageLink" value="{{imageLink}}" size="50" title="Image URL, max. length 100 characters." maxlength="100"/>
- <br>
- <label></label><button type="button" id="btShowFileUpload">Upload image</button>
-
- <fieldset class="added hiddenElm" id="fsetFileUpload">
- <legend>Image Upload</legend>
- <input type="file" id="flElm" name="file" accept="image/jpeg, image/png"/>
- <br />
- <button type="button" id="btFileUpload">Send image to server</button>
- <button type="button" id="btCancelFileUpload">Cancel uploading</button>
- </fieldset>
-
-
- <br>
- <label for="content">Article content:</label>
- <textarea
- name="content" id="content" spellcheck="true" lang="sk"
- cols="50" rows="20" required
- title="Article content, mandatory item, can be plain text or in HTML.">{{content}}</textarea>
- <br>
- <label for="tags">Keywords:</label>
- <input  type="text" name="tags" id="tags" value="{{tags}}" size="50"
- title="Keyword list, comma separated." placeholder="e.g. village, drama" />
-
- <br>
- <br>
- <button type="reset">
- Reset Form
- </button>
- <button type="submit">
- {{submitBtTitle}}
- </button>
-
- </form>
-
- which is processed by the function fetchAndProcessArticle() in routes.js
- */
-export default class articleFormsHandler {
-
-    /**
-     * @param articlesServerUrl - basic part of the server url, without the service specification, i.e.  https://wt.kpi.fei.tuke.sk/api
-     */
+export default class ArticleFormsHandler {
     constructor(articlesServerUrl) {
-        this.serverUrl=articlesServerUrl;
+        this.serverUrl = articlesServerUrl;
     }
 
-    /**
-     * assigns a matching form and article parameters to the handler
-     * @param formElementId - id of the html element with the form, i.e.  "articleForm".
-     * @param cssClass2hideElement - name of the css class setting display to none, i.e. "hiddenElm".
-     * @param articleId - id of the article to be updated.  Value <0 means that the form is for adding a new article (this functionality is not implemented)
-     * @param offset - current offset of the article list display to which the user should return
-     * @param totalCount - total number of the articles on the server
-     */
-    assignFormAndArticle(formElementId, cssClass2hideElement,articleId,offset,totalCount){
-        this.cssCl2hideElm  = cssClass2hideElement;
-        const artForm=document.getElementById(formElementId);
-        this.formElements=artForm.elements;
+    assignFormAndArticle(
+        formElementId,
+        cssClass2hideElement,
+        articleId,
+        offset,
+        totalCount
+    ) {
+        this.cssCl2hideElm = cssClass2hideElement;
 
-        this.formElements.namedItem('btShowFileUpload').onclick= ()=>this.showFileUpload();
-        this.formElements.namedItem('btFileUpload').onclick= ()=>this.uploadImg();
-        this.formElements.namedItem('btCancelFileUpload').onclick= ()=>this.cancelFileUpload();
+        const artForm = document.getElementById(formElementId);
 
+        if (!artForm) {
+            console.error(`Form with id "${formElementId}" was not found.`);
+            return;
+        }
 
+        this.formElements = artForm.elements;
 
-        if (articleId >= 0) {
-            // Article edit (update)
-            artForm.onsubmit = (event) => this.processArtEditFrmData(event);
+        // Upload controls are optional: the current HTML form
+        // does not contain these elements.
+        const showUploadButton =
+            this.formElements.namedItem("btShowFileUpload");
+
+        const uploadButton =
+            this.formElements.namedItem("btFileUpload");
+
+        const cancelUploadButton =
+            this.formElements.namedItem("btCancelFileUpload");
+
+        if (showUploadButton) {
+            showUploadButton.onclick = () => this.showFileUpload();
+        }
+
+        if (uploadButton) {
+            uploadButton.onclick = () => this.uploadImg();
+        }
+
+        if (cancelUploadButton) {
+            cancelUploadButton.onclick = () => this.cancelFileUpload();
+        }
+
+        if (Number(articleId) >= 0) {
+            // Edit an existing article.
             this.articleId = articleId;
             this.offset = offset;
             this.totalCount = totalCount;
+
+            artForm.onsubmit = (event) =>
+                this.processArtEditFrmData(event);
         } else {
-            // Article insert (create)
-            artForm.onsubmit = (event) => this.processArtInsertFrmData(event);
+            // Insert a new article.
+            artForm.onsubmit = (event) =>
+                this.processArtInsertFrmData(event);
+        }
+    }
+
+    showFileUpload() {
+        const fieldset =
+            this.formElements.namedItem("fsetFileUpload");
+        const button =
+            this.formElements.namedItem("btShowFileUpload");
+
+        if (fieldset) {
+            fieldset.classList.remove(this.cssCl2hideElm);
         }
 
-
+        if (button) {
+            button.classList.add(this.cssCl2hideElm);
+        }
     }
 
-    /**
-     *Pridanie funkcionality pre kliknutie na tlacidlo "Nahraj obrázok / Upload image"
-     * Adding functionality for the button "Nahraj obrázok / Upload image"
-     */
-    showFileUpload(event) {
-        this.formElements.namedItem('fsetFileUpload').classList.remove( this.cssCl2hideElm);
-        this.formElements.namedItem('btShowFileUpload').classList.add( this.cssCl2hideElm);
-    }
-
-    /**
-     *Pridanie funkcionality pre kliknutie na tlacidlo "Zruš nahrávanie / Cancel uploading"
-     *Adding functionality for the button "Zruš nahrávanie / Cancel uploading"
-     */
     cancelFileUpload() {
-        this.formElements.namedItem('fsetFileUpload').classList.add( this.cssCl2hideElm);
-        this.formElements.namedItem('btShowFileUpload').classList.remove( this.cssCl2hideElm);
-    }
+        const fieldset =
+            this.formElements.namedItem("fsetFileUpload");
+        const button =
+            this.formElements.namedItem("btShowFileUpload");
 
-    /**
-     * uploads a new image to the server , closes the corresponding part of the form and adds the url of the image to the form.
-     */
-    uploadImg() {
-
-        const files = this.formElements.namedItem("flElm").files;
-
-        if (files.length > 0) {
-            const imgLinkElement = this.formElements.namedItem("imageLink");
-            const fieldsetElement = this.formElements.namedItem("fsetFileUpload");
-            const btShowFileUploadElement = this.formElements.namedItem("btShowFileUpload");
-
-            //1. Gather  the image file data
-
-            let imgData = new FormData();     //obrazok su binarne udaje, preto FormData (pouzitelne aj pri upload-e viac suborov naraz)
-                                              //and image is binary data, that's why we use FormData (it works for multiple file upload, too)
-            imgData.append("file", files[0]); //beriem len prvy obrazok, ved prvok formulara by mal povolit len jeden
-                                              //takes only the first file (image)
-
-            //2. Set up the request
-
-
-            const postReqSettings = //an object wih settings of the request
-                {
-                    method: 'POST',
-                    body: imgData //FormData object, not JSON this time.
-                    //pozor:nezadavat content-type. potom to nepojde.
-                    //Beware: It doesn't work correctly if the content-type is set.
-                };
-
-
-            //3. Execute the request
-
-            fetch(`${this.serverUrl}/fileUpload`, postReqSettings)  //now we need the second parameter, an object wih settings of the request.
-                .then(response => {      //fetch promise fullfilled (operation completed successfully)
-                    if (response.ok) {    //successful execution includes an error response from the server. So we have to check the return status of the response here.
-                        return response.json(); //we return a new promise with the response data in JSON to be processed
-                    } else { //if we get server error
-                        return Promise.reject(new Error(`Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
-                    }
-                })
-                .then(responseJSON => { //here we process the returned response data in JSON ...
-                    imgLinkElement.value = responseJSON.fullFileUrl;
-                    btShowFileUploadElement.classList.remove( this.cssCl2hideElm);
-                    fieldsetElement.classList.add( this.cssCl2hideElm);
-                })
-                .catch(error => { ////here we process all the failed promises
-                    window.alert(`Image uploading failed. ${error}.`);
-                });
-        } else {
-            window.alert("Please, choose an image file.");
+        if (fieldset) {
+            fieldset.classList.add(this.cssCl2hideElm);
         }
 
-
+        if (button) {
+            button.classList.remove(this.cssCl2hideElm);
+        }
     }
 
-    /**
-     * Process form data and sends the article to server
-     * @param event - event object, to prevent default processing
-     */
+    uploadImg() {
+        const fileInput = this.formElements.namedItem("flElm");
+
+        if (!fileInput || !fileInput.files.length) {
+            window.alert("Please, choose an image file.");
+            return;
+        }
+
+        if (!this.serverUrl) {
+            window.alert(
+                "Image upload requires a configured API server."
+            );
+            return;
+        }
+
+        const imgLinkElement =
+            this.formElements.namedItem("imageLink");
+
+        const fieldsetElement =
+            this.formElements.namedItem("fsetFileUpload");
+
+        const showButton =
+            this.formElements.namedItem("btShowFileUpload");
+
+        const imgData = new FormData();
+        imgData.append("file", fileInput.files[0]);
+
+        fetch(`${this.serverUrl}/fileUpload`, {
+            method: "POST",
+            body: imgData
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(
+                        `Server answered with ${response.status}`
+                    );
+                }
+
+                return response.json();
+            })
+            .then((responseJSON) => {
+                imgLinkElement.value = responseJSON.fullFileUrl;
+
+                if (showButton) {
+                    showButton.classList.remove(this.cssCl2hideElm);
+                }
+
+                if (fieldsetElement) {
+                    fieldsetElement.classList.add(this.cssCl2hideElm);
+                }
+            })
+            .catch((error) => {
+                window.alert(`Image uploading failed: ${error.message}`);
+            });
+    }
+
+    
+getArticleData() {
+    const title = this.formElements.namedItem("title").value.trim();
+    const author =
+        this.formElements.namedItem("author").value.trim() || "anonymous";
+    const imageLink =
+        this.formElements.namedItem("imageLink").value.trim();
+    const content =
+        this.formElements.namedItem("content").value.trim();
+
+    const tagsInput = this.formElements.namedItem("tags").value;
+
+    const tags = tagsInput
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0);
+
+    const blogTag = "laLigaBlog2026";
+
+    if (!tags.includes(blogTag)) {
+        tags.push(blogTag);
+    }
+
+    return {
+        title,
+        author,
+        imageLink,
+        content,
+        tags
+    };
+}
+
     processArtEditFrmData(event) {
         event.preventDefault();
 
-        //1. Gather and check the form data
-        const articleData = {
-            title: this.formElements.namedItem("title").value.trim(),
-            content: this.formElements.namedItem("content").value.trim(),
-            author: this.formElements.namedItem("author").value.trim(),
+        const articleData = this.getArticleData();
 
-            imageLink: this.formElements.namedItem("imageLink").value.trim(),
-            tags: this.formElements.namedItem("tags").value.trim()
-        };
-
-        if (!(articleData.title && articleData.content)) {
-            window.alert("Please, enter article title and content");
+        if (!articleData) {
             return;
         }
 
-        if (!articleData.author) {
-            articleData.author = "Anonymous";
+        if (!this.serverUrl) {
+            window.alert(
+                "The form works, but saving requires an API server. " +
+                "Your changes have not been saved."
+            );
+            return;
         }
 
-        if (!articleData.imageLink) {
-            delete articleData.imageLink;
-        }
-
-        if (!articleData.tags) {
-            delete articleData.tags;
-        } else {
-            articleData.tags = articleData.tags.split(","); //zmeni retazec s tagmi na pole. Oddelovac poloziek je ciarka.
-            //changes the string with tags to array. Comma is the separator
-            articleData.tags = articleData.tags.map(tag => tag.trim()); //odstráni prázdne znaky na začiatku a konci každého kľúčového slova
-            //deletes white spaces from the beginning and the end of each tag string
-
-            //newArtData.tags=newArtData.tags.map(function(tag) {return tag.trim()}); //alternativny sposob zapisu predch. prikazu
-            //an alternative way of writing the previous command
-
-            articleData.tags = articleData.tags.filter(tag => tag); //odstráni tie tagy, ktoré sú teraz len prázdne reťazce
-            //removes those tags that are now just empty strings
-            if (articleData.tags.length == 0) {
-                delete articleData.tags;
-            }
-        }
-
-        //2. Set up the request
-
-
-        const postReqSettings = //an object wih settings of the request
+        fetch(
+            `${this.serverUrl}/article/${encodeURIComponent(this.articleId)}`,
             {
-                method: 'PUT',
+                method: "PUT",
                 headers: {
-                    'Content-Type': 'application/json;charset=utf-8',
+                    "Content-Type": "application/json;charset=utf-8"
                 },
                 body: JSON.stringify(articleData)
-            };
-
-
-        //3. Execute the request
-
-
-        fetch(`${this.serverUrl}/article/${this.articleId}`, postReqSettings)  //now we need the second parameter, an object wih settings of the request.
-            .then(response => {      //fetch promise fullfilled (operation completed successfully)
-                if (response.ok) {    //successful execution includes an error response from the server. So we have to check the return status of the response here.
-                    return response.json(); //we return a new promise with the response data in JSON to be processed
-                } else { //if we get server error
-                    return Promise.reject(new Error(`Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
+            }
+        )
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(
+                        `Server answered with ${response.status}: ${response.statusText}`
+                    );
                 }
-            })
-            .then(responseJSON => { //here we process the returned response data in JSON ...
-                window.alert("Updated article successfully saved on server");
-            })
-            .catch(error => { ////here we process all the failed promises
-                window.alert(`Failed to save the updated article on server. ${error}`);
 
+                window.alert("Article updated successfully.");
+                window.location.hash =
+                    `#article/${this.articleId}/${this.offset}/${this.totalCount}`;
             })
-            .finally(() => window.location.hash = `#article/${ this.articleId}/${ this.offset}/${ this.totalCount}`);
+            .catch((error) => {
+                window.alert(`Failed to update article: ${error.message}`);
+            });
+    }
 
-        }
     processArtInsertFrmData(event) {
         event.preventDefault();
 
-        const articleData = {
-            title: this.formElements.namedItem("title").value.trim(),
-            content: this.formElements.namedItem("content").value.trim(),
-            author: this.formElements.namedItem("author").value.trim(),
-            imageLink: this.formElements.namedItem("imageLink").value.trim(),
-            tags: this.formElements.namedItem("tags").value.trim()
-        };
+        const articleData = this.getArticleData();
 
-        if (!(articleData.title && articleData.content)) {
-            window.alert("Please, enter article title and content");
+        if (!articleData) {
             return;
         }
 
-        if (!articleData.author) {
-            articleData.author = "Anonymous";
+        if (!this.serverUrl) {
+            window.alert(
+                "The form works, but adding articles requires an API server. " +
+                "Your article has not been saved."
+            );
+            return;
         }
 
-        if (!articleData.imageLink) {
-            delete articleData.imageLink;
-        }
-
-        if (!articleData.tags) {
-            delete articleData.tags;
-        } else {
-            articleData.tags = articleData.tags
-                .split(",")
-                .map(tag => tag.trim())
-                .filter(tag => tag);
-
-            if (articleData.tags.length === 0) {
-                delete articleData.tags;
-            }
-        }
-
-        const postReqSettings = {
+        fetch(`${this.serverUrl}/article`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
             },
             body: JSON.stringify(articleData)
-        };
-
-        fetch(`${this.serverUrl}/article`, postReqSettings)
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    return Promise.reject(
-                        new Error(
-                            `Server answered with ${response.status}: ${response.statusText}.`
-                        )
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(
+                        `Server answered with ${response.status}: ${response.statusText}`
                     );
                 }
+
+                return response.json();
             })
-            .then(responseJSON => {
-                window.alert("Article successfully added to the server.");
+            .then(() => {
+                window.alert("Article added successfully.");
                 window.location.hash = "#articles";
             })
-            .catch(error => {
-                window.alert(`Failed to add the article to the server. ${error}`);
+            .catch((error) => {
+                window.alert(`Failed to add article: ${error.message}`);
             });
     }
-
 }
-

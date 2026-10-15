@@ -96,35 +96,46 @@
     </script>
 
     <!-- Articles loaded from the server -->
+    
     <script id="template-articles" type="text/template">
         <section class="main-block">
-            <h2 class="main-header">Articles</h2>
+            <h2 class="main-header">The Best Teams in La Liga</h2>
 
             {{#articles}}
             <article class="main-block">
-                <h3 class="main-header"> <a class="articles-link" href="{{detailLink}}">{{title}}</a> </h3>
+                <h3 class="main-header">
+                    <a class="articles-link" href="{{detailLink}}">{{title}}</a>
+                </h3>
+
+                {{#description}}
                 <p class="main-text">{{description}}</p>
+                {{/description}}
+
                 <p class="main-text">Author: {{author}}</p>
             </article>
             {{/articles}}
 
             {{^articles}}
-            <p class="main-text">No articles found.</p>
+            <p class="main-text">
+                No articles found. Add your articles to the TUKE server with
+                the tag laLigaBlog2026.
+            </p>
             {{/articles}}
 
             <nav class="pagination">
                 {{#previousPage}}
-                    <a href="#articles/{{previousOffset}}">Previous</a>
+                <a href="#articles/{{previousOffset}}">Previous</a>
                 {{/previousPage}}
 
                 {{#nextPage}}
-                    <a href="#articles/{{nextOffset}}">Next</a>
+                <a href="#articles/{{nextOffset}}">Next</a>
                 {{/nextPage}}
             </nav>
         </section>
     </script>
 
     <!--article-page-->
+    
     <script id="template-article" type="text/template">
         <section class="main-block">
             <article class="main-block">
@@ -140,9 +151,9 @@
 
                 <div class="main-text">{{{content}}}</div>
 
-                <p class="main-text">
-                    Keywords: {{tags}}
-                </p>
+                {{#tags}}
+                <p class="main-text">Keywords: {{tags}}</p>
+                {{/tags}}
             </article>
 
             <nav class="pagination">
@@ -150,6 +161,77 @@
                 <a href="{{editLink}}">Edit</a>
                 <a href="{{deleteLink}}">Delete</a>
             </nav>
+
+            <section class="main-block">
+                <h2 class="main-header">Comments</h2>
+
+                {{#comments}}
+                <article class="visitor-opinion">
+                    <h3>{{author}}</h3>
+                    <p>{{text}}</p>
+                    {{#dateCreated}}
+                    <p><small>{{dateCreated}}</small></p>
+                    {{/dateCreated}}
+                </article>
+                {{/comments}}
+
+                {{^hasComments}}
+                <p class="main-text">No comments yet. Be the first!</p>
+                {{/hasComments}}
+
+                <nav class="pagination">
+                    {{#previousCommentsPage}}
+                    <a href="{{previousCommentsLink}}">Previous comments</a>
+                    {{/previousCommentsPage}}
+
+                    {{#nextCommentsPage}}
+                    <a href="{{nextCommentsLink}}">Next comments</a>
+                    {{/nextCommentsPage}}
+                </nav>
+
+                <p>
+                    <a class="linkAsButton" href="{{addCommentLink}}">
+                        Add Comment
+                    </a>
+                </p>
+
+                {{#showCommentForm}}
+                <section class="main-block">
+                    <h3 class="main-header">Add a comment</h3>
+
+                    <form id="commentForm" class="form">
+                        <div class="form-group">
+                            <label for="commentAuthor">Name:</label>
+                            <input
+                                type="text"
+                                id="commentAuthor"
+                                name="commentAuthor"
+                                maxlength="100"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="commentText">Comment:</label>
+                            <textarea
+                                id="commentText"
+                                name="commentText"
+                                rows="5"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit">Send comment</button>
+                            <a
+                                class="linkAsButton"
+                                href="#article/{{id}}/{{../listOffset}}/{{../totalCount}}/0"
+                            >Cancel</a>
+                        </div>
+                    </form>
+                </section>
+                {{/showCommentForm}}
+            </section>
         </section>
     </script>
 
